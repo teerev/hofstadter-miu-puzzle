@@ -1,8 +1,5 @@
 from numpy import random
 import pandas as pd
-import pygraphviz as pgv
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
 
 
 class muPuzzle:
@@ -118,7 +115,7 @@ class muPuzzle:
         else:
             return None
     
-
+    
     def apply_rule_two(self, string):
         
         """
@@ -220,8 +217,7 @@ class muPuzzle:
         # node) tuple as dict key, and rule that gives node ---> neighbour as dict value
         edges = dict()
 
-        i=0
-        
+        i=0      
         # find all nodes resulting from all possible combinations of rules 1-4 up to num_steps times
         while i<num_steps:
             
@@ -245,8 +241,7 @@ class muPuzzle:
 
             # store all nodes discovered in this step into the nodes list comprising the entire network
             for new_neighbour in new_neighbours:
-                nodes.add(new_neighbour)
-            
+                nodes.add(new_neighbour)      
             i+=1
 
         network = dict()
@@ -254,45 +249,3 @@ class muPuzzle:
         network['edges'] = edges
 
         return network
-    
-    
-    @staticmethod
-    def get_adjacency_matrix(network):
-        
-        """
-        Returns pandas dataframe representing the adjacency matrix for the network structure found by
-        discover_local_network(), whose index and columns attributes are set to the node names (strings).
-        """
-    
-        adjacency = pd.DataFrame(0, index=network['nodes'], columns=network['nodes'])
-    
-        for nodepair, rule in network['edges'].items():
-            adjacency.loc[nodepair[1], nodepair[0]] = rule
-        
-        return adjacency
-
-
-    @staticmethod
-    def plot_network(network):
-        
-        """
-        Returns an image showing the graph of the network found by discover_local_network().
-        """
-    
-        plt.rcParams['figure.dpi'] = 400
-        
-        graph = pgv.AGraph(directed=True, overlap='false', splines='true')
-        
-        for node in network['nodes']:
-            graph.add_node(node)
-        
-        for edge in network['edges'].items():
-            graph.add_edge(edge[0], label=edge[1], color='red')
-        
-        graph.layout(prog='neato')  #neato, dot, twopi, circo, fdp, nop, wc, acyclic, gvpr, gvcolor, ccomps, sccmap, sfdp
-        graph.draw('graph.png')
-        
-        img = mpimg.imread('graph.png')
-        plt.imshow(img)
-        plt.axis('off')
-        plt.show()
